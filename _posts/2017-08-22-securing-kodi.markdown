@@ -15,14 +15,14 @@ I use docker-compose for reason that can be read about (link: https://moncur.eu/
 Now that is set up and running we are going to configure our gateway server. The reason I have done this is I run kodi off an (link: https://www.amazon.co.uk/Amazon-Fire-TV-Stick-Streaming-Media-Player/dp/B00KAKUN3E text: amazon fire stick). The reason for this is that it easy to use for apps like bbc iplayer and netflix, that my wife can use, but also it allows me to side load android apk's on to it. One issue however is that that openVPN requires a third party app, so I have elected to instead of trying to install another app on the firestick, which might not be compatible with the remote, and the stick needs rooting to allow vpn support, and I have an (link: http://www.orangepi.org/orangepipc2/ text: orangepi pc2) running ubuntu 16.04 just sitting around.
 
 First I configure the orangepi to connect to the vpn. Luckily this is as easy as
-///
+```
 apt update
 apt install openvpn screen
 screen -S openvpn
 openvpn --config /path/to/config/generated/by/docker
-///
+```
 Now we assign this server a static ip, so we always use this IP as our default gateway
-///
+```
 /etc/network/interfaces.d/eth0:
 auto eth0
 iface eth0 inet static
@@ -31,7 +31,7 @@ gateway 192.168.0.1
 netmask 255.255.255.0
 broadcast 192.168.0.255
 dns-nameservers 127.0.1.1
-///
+```
 Please ensure ip addresses are amended for your own network.
 
 Next we need to enable the server to allow it forward network traffic on via the VPN.
@@ -39,10 +39,10 @@ Next we need to enable the server to allow it forward network traffic on via the
     Enable ip_forward, by adding to /etc/sysctl.conf net.ipv4.ip_forward = 1 then run sysctl -p
 
 We now will use iptables to forward the traffic that comes into eth0 out of tun0 (the openVPN interface)
-///
+```
 iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 iptables -A FORWARD -s 192.168.0.0/24 -i eth0 -o tun0 -m conntrack --ctstate NEW -j ACCEPT
 iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-///
+```
 Finally we configure the amazon firestick now to use the orangepi. This is sort of hidden, but it is all done under settings > system > network.
 If you are already connected to the wireless network you will need to forget the network and re connect again and enter your password, but don't click connect but click advanced. Then fill in the details by following the wizard and when you get to gateway you will put in 192.168.0.15 (or whatever IP you used above). And that is that.

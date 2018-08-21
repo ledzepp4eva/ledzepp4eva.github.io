@@ -2,18 +2,18 @@ I have a habit of re-installing my laptop or staff virtual machines all the time
 
 Looking online it looks pretty simple as you are taken to some official documenation that is located here [https://www.freebsd.org/doc/handbook/network-ipv6.html|en] and section 30.9.2. Configuring IPv6, so this is what I do:
 
-///
+```
 ifconfig_vtnet0_ipv6="inet6 accept_rtadv"
 rtsold_enable="YES"
 #ipv6_activate_all_interfaces="YES"
 ifconfig_vtnet0_ipv6="inet6 2a02:22d0:9:6::a prefixlen 128"
 ipv6_defaultrouter="fe80::f816:3eff:feb1:ed64"
-///
+```
 
 I reboot the server, but I still don't have any connectivety over ipv6, which is strange as I know this IP information is correct, as I have the exact same configuration on a different server (non freebsd), but with the last 16bits changed. So this is strange. 
 
 By running ifconfig I can see the IP is assigned, so lets check the default route
-///
+```
 Internet6:
 Destination                       Gateway                       Flags     Netif Expire
 ::/96                             ::1                           UGRS        lo0
@@ -27,16 +27,16 @@ fe80::f816:3eff:feb9:ea5e%vtnet0  link#1                        UHS         lo0
 fe80::%lo0/64                     link#2                        U           lo0
 fe80::1%lo0                       link#2                        UHS         lo0
 ff02::/16                         ::1                           UGRS        lo0
-///
+```
 
 and the line that stands out to me is
-///
+```
 default                           fe80::f816:3eff:feb1:ed64     UGS         lo0
-///
+```
 This looks like the default gw is going out the lo0 interface, which is strange. Luckily there is a quick fix for this that took me an awful lot of searching for in the /etc/rc.conf file
 
-///
+```
 ipv6_defaultrouter="fe80::f816:3eff:feb1:ed64%vtnet0"
-///
+```
 
 and now when I reboot IPv6 is working.
