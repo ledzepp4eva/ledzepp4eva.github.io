@@ -23,10 +23,10 @@ Breaking it down it:
 * The location of the volume. (more of a reference than anything else)
 * The command to run in the foreground to keep the image online.
 
-I could have done all this in apache and when I started and exposed port 80 and 443 to the container, but I already use a lot of nginx and I personally prefer it to apache. or I could have bundled nginx into the image and use something such as (link: http://supervisord.org/ text: supervisord).
-Well I also listen to a lot of podcast (which I can talk about another time) and one personal favourites is (link: http://podcast.sysca.st/ text: syscast podcast). In episode 2 they talk about docker and one thing I took from this was a good rule of thumb is to have one service per container, which seem sensible to me.
+I could have done all this in apache and when I started and exposed port 80 and 443 to the container, but I already use a lot of nginx and I personally prefer it to apache. or I could have bundled nginx into the image and use something such as [supervisord](http://supervisord.org/).
+Well I also listen to a lot of podcast (which I can talk about another time) and one personal favourites is [syscast podcast](http://podcast.sysca.st/). In episode 2 they talk about docker and one thing I took from this was a good rule of thumb is to have one service per container, which seem sensible to me.
 
-So next is to spin up an nginx image. Luckily in this regard there is no need for a Dockerfile as nginx have an image [mainline-apline docker hub](https://hub.docker.com/_/nginx/ nginx:mainline-apine). So I can spin this up using
+So next is to spin up an nginx image. Luckily in this regard there is no need for a Dockerfile as nginx have an image [mainline-apline docker hub](https://hub.docker.com/_/nginx/). So I can spin this up using
 ```
 docker run -d nginx:mainline-alpine
 ```
