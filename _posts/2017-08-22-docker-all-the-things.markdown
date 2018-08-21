@@ -1,6 +1,6 @@
 One problem with learning something new is that once you have been through the walkthroughs and examples you end up forgetting about it and months down the line you have forgotten what you did and end up having to go through the docs all over again.
 
-This is exactly what happened to me when going through (link: https://docs.docker.com/engine/getstarted/ text: the docker docs). So I made the decision to find a use case for docker and host a website using docker, which is what you are browsing now (well as of 21/02/17).
+This is exactly what happened to me when going through [the docker docs](https://docs.docker.com/engine/getstarted/). So I made the decision to find a use case for docker and host a website using docker, which is what you are browsing now (well as of 21/02/17).
 
 Below is my Dockerfile to build the image that this website is running off.
 ```
@@ -26,7 +26,7 @@ Breaking it down it:
 I could have done all this in apache and when I started and exposed port 80 and 443 to the container, but I already use a lot of nginx and I personally prefer it to apache. or I could have bundled nginx into the image and use something such as (link: http://supervisord.org/ text: supervisord).
 Well I also listen to a lot of podcast (which I can talk about another time) and one personal favourites is (link: http://podcast.sysca.st/ text: syscast podcast). In episode 2 they talk about docker and one thing I took from this was a good rule of thumb is to have one service per container, which seem sensible to me.
 
-So next is to spin up an nginx image. Luckily in this regard there is no need for a Dockerfile as nginx have an image (link: https://hub.docker.com/_/nginx/ nginx:mainline-apine). So I can spin this up using
+So next is to spin up an nginx image. Luckily in this regard there is no need for a Dockerfile as nginx have an image [mainline-apline docker hub](https://hub.docker.com/_/nginx/ nginx:mainline-apine). So I can spin this up using
 ```
 docker run -d nginx:mainline-alpine
 ```
@@ -40,14 +40,14 @@ docker run -d -v kirby-blog:/srv/kirby kirby-image:latest
 ```
 
 This means that I can now create an nginx configuration, but there are a few issues
-# you need to use docker inspect on the kirby container to get it's internal IP address, so you know the IP nginx has the proxy .php files to. This IP is liable to change if the container is removed and re-created, which means you need to change this in the nginx container all the time.
-# The document root for nginx to process requests that are not .php becames /var/lib/docker/volumes/kirby-blog/_data. This isn't great as it means you will have to open up world read access, or even group read access and give the nginx user access to those folders.
+* you need to use docker inspect on the kirby container to get it's internal IP address, so you know the IP nginx has the proxy .php files to. This IP is liable to change if the container is removed and re-created, which means you need to change this in the nginx container all the time.
+* The document root for nginx to process requests that are not .php becames `/var/lib/docker/volumes/kirby-blog/_data.` This isn't great as it means you will have to open up world read access, or even group read access and give the nginx user access to those folders.
 
 For point 1 what you can do is create your own docker network and then give the containers static ip addresses.
-docker network create --subnet=172.16.238.0/24 my_first_network
+`docker network create --subnet=172.16.238.0/24 my_first_network`
 the use the --ip when running your docker run command to tell the container to always have this IP address. This will allow you to fix point 1.
 
-For point 2 what you need is a way to link the containers together. Well you can link containers using (link: https://docs.docker.com/engine/tutorials/dockervolumes/ text: volumes), without going into detail we can mount the volume kirby-blog in the nginx container, so we can then change the $document_root in /srv/kirby, which is the same location in the kirby container.
+For point 2 what you need is a way to link the containers together. Well you can link containers using [volumes](https://docs.docker.com/engine/tutorials/dockervolumes/), without going into detail we can mount the volume kirby-blog in the nginx container, so we can then change the $document_root in /srv/kirby, which is the same location in the kirby container.
 
 Ok, so now you can in your docker run command use -v to link the volumes and --ip to ensure that you have the same IP, but now your docker run command is becoming quite unwieldy.
 ```
@@ -55,7 +55,7 @@ docker run --restart=always -d --ip 172.16.238.2 -v kirby-blog:/srv/kirby -v /et
 docker run --restart=always -d --ip 172.16.238.3 -v kirby-blog:/srv/kirby -p127.0.0.1:9000:9000 &lt;kirby-image&gt;
 ```
 
-This brings me on to an essential part of the docker set up that I came across quite quickly and was also mentioned in the above podcast episode which is (link: https://docs.docker.com/compose/ text: docker compose). You can use this to achieve all of the above in a small bit of yaml configuration.
+This brings me on to an essential part of the docker set up that I came across quite quickly and was also mentioned in the above podcast episode which is [docker compose](https://docs.docker.com/compose/). You can use this to achieve all of the above in a small bit of yaml configuration.
 ```
 version: '2.1'
 services:
@@ -113,4 +113,4 @@ What this does is allows us to start up the solution by just running docker-comp
 docker-compose build; docker-compose down; docker-compose up -d
 ```
 
-Although there is a lot to explore in docker, such as https://docs.docker.com/engine/swarm/ or https://kubernetes.io/, but what this has done has allowed for that understanding to actually stick and to really see the massive advantages to using docker and the satisfaction of learning something new.
+Although there is a lot to explore in docker, such as [docker swarm](https://docs.docker.com/engine/swarm/) or [kubernetes](https://kubernetes.io/), but what this has done has allowed for that understanding to actually stick and to really see the massive advantages to using docker and the satisfaction of learning something new.
