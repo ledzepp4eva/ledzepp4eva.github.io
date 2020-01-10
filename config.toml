@@ -1,0 +1,17 @@
+baseurl = "/"
+title = "Wee bit of Linux"
+theme = "ghostwriter"
+
+[Params]
+    mainSections = ["post"]
+    intro = true
+    headline = "My headline"
+    description = "My description"
+    github = "https://github.com/ledzepp4eva"
+    email = "liam@moncur.me.uk"
+    opengraph = true
+    shareTwitter = true
+    dateFormat = "Mon, Jan 2, 2006"
+
+[Permalinks]
+    post = "/:filename/"
