@@ -4,8 +4,6 @@ title: quotes
 permalink: /quotes/
 ---
 
-#Quotes
-
 * Guardians of the Galaxy Vol. 2:
   * Nebula: [to Gamora] All any of you do is yell at each other. You're not friends.
   * Drax: You're right... We're family.
